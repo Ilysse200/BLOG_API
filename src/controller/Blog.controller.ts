@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../config/database";
 import  {Blog } from "../entities/Blog";
 import { User } from "../entities/User";
+import { Any } from "typeorm";
 
 
 export class blogController{
@@ -88,6 +89,24 @@ static async getAllPosts(req: Request, res: Response) {
     return res.status(500).json({ message: "Failed to fetch blog post" });
   }
 }
+//create an async function that will delete a blog by id
 
+static async deleteBlog(req:Request, res:Response){
+
+  //Provide the id for deleting
+  const {id} = req.params;
+  const blogFind = await AppDataSource.getRepository(Blog);//line that will retrieve the blog from the database
+  const blog = await blogFind.findOne({
+    where: {id},
+    relations:["author"],
+  });
+  if(!blog){
+    res.status(400)
+    .json({message:'Blog Not found'});
+  }
+  blogFind.remove(blog as any, id as any);
+  return res.status(200).
+  json({message:'Blog deleted successfully!!'});
+  }
 }
 

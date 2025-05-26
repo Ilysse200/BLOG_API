@@ -39,4 +39,7 @@ const auth_middleware_1 = require("../middleware/auth.middleware");
 const Blogrouter = express.Router();
 Blogrouter.post('/createBlogs', auth_middleware_1.authentification, Blog_controller_1.blogController.createPost);
 Blogrouter.get('/getBlogs', auth_middleware_1.authentification, Blog_controller_1.blogController.getAllPosts);
+Blogrouter.put('/editBlogs/:id', auth_middleware_1.authentification, Blog_controller_1.blogController.updatePost);
+Blogrouter.get('/getBlogsById/:id', auth_middleware_1.authentification, Blog_controller_1.blogController.getPostById);
+Blogrouter.delete('/deleteBlog/:id', auth_middleware_1.authentification, Blog_controller_1.blogController.deleteBlog);
 exports.default = Blogrouter;

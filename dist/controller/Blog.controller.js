@@ -45,5 +45,72 @@ class blogController {
             }
         });
     }
+    static updatePost(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const { title, body } = req.body;
+                const currentUser = req.currentUser;
+                const blogRepo = database_1.AppDataSource.getRepository(Blog_1.Blog);
+                const post = yield blogRepo.findOne({
+                    where: { id },
+                    relations: ["author"],
+                });
+                if (!post) {
+                    return res.status(404).json({ message: "Blog post not found" });
+                }
+                if (post.author.id !== currentUser.id) {
+                    return res.status(403).json({ message: "Unauthorized to update this post" });
+                }
+                post.title = title || post.title;
+                post.body = body || post.body;
+                yield blogRepo.save(post);
+                res.status(200).json({ message: "Post updated successfully", post });
+            }
+            catch (error) {
+                console.error("Error updating post:", error);
+                res.status(500).json({ message: "Failed to update post" });
+            }
+        });
+    }
+    static getPostById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            try {
+                const blogRepo = database_1.AppDataSource.getRepository(Blog_1.Blog);
+                const blog = yield blogRepo.findOne({
+                    where: { id },
+                    relations: ["author"],
+                });
+                if (!blog) {
+                    return res.status(404).json({ message: "Blog not found" });
+                }
+                return res.status(200).json(blog);
+            }
+            catch (error) {
+                console.error("Error fetching post by ID:", error);
+                return res.status(500).json({ message: "Failed to fetch blog post" });
+            }
+        });
+    }
+    //create an async function that will delete a blog by id
+    static deleteBlog(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //Provide the id for deleting
+            const { id } = req.params;
+            const blogFind = yield database_1.AppDataSource.getRepository(Blog_1.Blog); //line that will retrieve the blog from the database
+            const blog = yield blogFind.findOne({
+                where: { id },
+                relations: ["author"],
+            });
+            if (!blog) {
+                res.status(400)
+                    .json({ message: 'Blog Not found' });
+            }
+            blogFind.remove(blog, id);
+            return res.status(200).
+                json({ message: 'Blog deleted successfully!!' });
+        });
+    }
 }
 exports.blogController = blogController;
