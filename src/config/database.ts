@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm';
 import { User } from '../entities/User';
 import { log } from "console";
 import { Blog } from '../entities/Blog';
-import { Client } from '../entities/Client';
+
 
 
 export const AppDataSource = new DataSource({
