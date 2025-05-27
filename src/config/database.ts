@@ -13,7 +13,7 @@ export const AppDataSource = new DataSource({
     username: 'postgres',
     password: '1234',
     database: 'users',
-    entities: [User, Blog, Client],
+    entities: [User, Blog],
     logging: true,
     migrations: ['src/migrations/**/*.ts'],
     subscribers: ['src/subscribers/**/*.ts'],
