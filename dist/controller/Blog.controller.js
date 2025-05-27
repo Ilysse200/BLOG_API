@@ -60,7 +60,7 @@ class blogController {
                     return res.status(404).json({ message: "Blog post not found" });
                 }
                 if (post.author.id !== currentUser.id) {
-                    return res.status(403).json({ message: "Unauthorized to update this post" });
+                    return res.status(405).json({ message: "Unauthorized to update this post" });
                 }
                 post.title = title || post.title;
                 post.body = body || post.body;
