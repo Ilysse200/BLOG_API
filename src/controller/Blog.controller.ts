@@ -55,7 +55,7 @@ static async getAllPosts(req: Request, res: Response) {
       }
 
       if (post.author.id !== currentUser.id) {
-        return res.status(403).json({ message: "Unauthorized to update this post" });
+        return res.status(405).json({ message: "Unauthorized to update this post" });
       }
 
       post.title = title || post.title;
