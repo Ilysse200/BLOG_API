@@ -14,6 +14,7 @@ exports.InitializeDatabase = exports.AppDataSource = void 0;
 const typeorm_1 = require("typeorm");
 const User_1 = require("../entities/User");
 const Blog_1 = require("../entities/Blog");
+const Client_1 = require("../entities/Client");
 exports.AppDataSource = new typeorm_1.DataSource({
     type: 'postgres',
     host: 'localhost',
@@ -21,7 +22,7 @@ exports.AppDataSource = new typeorm_1.DataSource({
     username: 'postgres',
     password: '1234',
     database: 'users',
-    entities: [User_1.User, Blog_1.Blog],
+    entities: [User_1.User, Blog_1.Blog, Client_1.Client],
     logging: true,
     migrations: ['src/migrations/**/*.ts'],
     subscribers: ['src/subscribers/**/*.ts'],

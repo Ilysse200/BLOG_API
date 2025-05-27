@@ -31,4 +31,10 @@ export class User {
   updatedAt!: Date;
   @OneToMany(() => Blog, blog => blog.author)
   blogs!: Blog[];
+
+  @Column({type:'text',nullable: true })
+  resetToken?: string | null;
+
+  @Column({ type: "timestamp", nullable: true })
+  resetTokenExpiry?: Date | null;
 }

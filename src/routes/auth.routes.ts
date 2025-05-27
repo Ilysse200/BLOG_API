@@ -8,4 +8,7 @@ Router.post("/register",AuthController.register as any);
 Router.post("/login", AuthController.login as any);
 Router.get("/profile", authentification as any, AuthController.getProfile as any);
 
+//Routes for forgot password and reset tokens
+Router.post("/forgot-password", AuthController.forgotPassword as any);
+Router.post("/reset-password/:token", AuthController.resetPassword as any);
 export default Router;

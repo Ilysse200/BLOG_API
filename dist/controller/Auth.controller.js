@@ -19,11 +19,17 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const database_1 = require("../config/database");
 const User_1 = require("../entities/User");
 const helpers_1 = require("../helpers/helpers");
+const sendEmail_1 = require("../utils/sendEmail");
+const typeorm_1 = require("typeorm");
+const crypto_1 = __importDefault(require("crypto"));
 class AuthController {
     //Register the user
     static register(req, res) {
@@ -102,6 +108,60 @@ class AuthController {
             }
             const { password: _ } = user, userWithoutPassword = __rest(user, ["password"]);
             return res.status(200).json(userWithoutPassword);
+        });
+    }
+    //Forgot Password
+    static forgotPassword(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { email } = req.body;
+                if (!email)
+                    return res.status(400).json({ message: "Email required" });
+                const userRepository = database_1.AppDataSource.getRepository(User_1.User);
+                const user = yield userRepository.findOne({ where: { email } });
+                if (!user)
+                    return res.status(404).json({ message: "User not found" });
+                const token = crypto_1.default.randomBytes(32).toString("hex");
+                user.resetToken = token;
+                user.resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
+                yield userRepository.save(user);
+                const resetLink = `http://localhost:3000/reset-password/${token}`;
+                yield (0, sendEmail_1.sendEmail)(user.email, "Reset Your Password", `<p>Click <a href="${resetLink}">here</a> to reset your password. This link expires in 1 hour.</p>`);
+                res.status(200).json({ message: "Reset link sent to email." });
+            }
+            catch (err) {
+                console.error(err);
+                res.status(500).json({ message: "Internal server error" });
+            }
+        });
+    }
+    static resetPassword(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { token } = req.params;
+                const { newPassword } = req.body;
+                const userRepository = database_1.AppDataSource.getRepository(User_1.User);
+                const user = yield userRepository.findOne({
+                    where: {
+                        resetToken: token,
+                        resetTokenExpiry: (0, typeorm_1.MoreThan)(new Date()),
+                    },
+                });
+                if (!user)
+                    return res.status(400).json({ message: "Invalid or expired token" });
+                if (!newPassword || newPassword.trim() === "") {
+                    return res.status(400).json({ message: "New password is required." });
+                }
+                user.password = yield helpers_1.encrypt.encryptpass(newPassword);
+                user.resetToken = null;
+                user.resetTokenExpiry = null;
+                yield userRepository.save(user);
+                res.status(200).json({ message: "Password reset successfully." });
+            }
+            catch (err) {
+                console.error(err);
+                res.status(500).json({ message: "Internal server error" });
+            }
         });
     }
 }

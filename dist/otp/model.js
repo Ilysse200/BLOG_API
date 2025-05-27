@@ -33,14 +33,15 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-const express = __importStar(require("express"));
-const Auth_controller_1 = require("../controller/Auth.controller");
-const auth_middleware_1 = require("../middleware/auth.middleware");
-const Router = express.Router();
-Router.post("/register", Auth_controller_1.AuthController.register);
-Router.post("/login", Auth_controller_1.AuthController.login);
-Router.get("/profile", auth_middleware_1.authentification, Auth_controller_1.AuthController.getProfile);
-//Routes for forgot password and reset tokens
-Router.post("/forgot-password", Auth_controller_1.AuthController.forgotPassword);
-Router.post("/reset-password/:token", Auth_controller_1.AuthController.resetPassword);
-exports.default = Router;
+const mongoose_1 = __importStar(require("mongoose"));
+// Define the schema
+const OTPSchema = new mongoose_1.Schema({
+    email: { type: String, unique: true, required: true },
+    otp: { type: String, required: true },
+    createdAt: { type: Date, required: true },
+    expiresAt: { type: Date, required: true },
+});
+// Create the model
+const OTP = mongoose_1.default.model("OTP", OTPSchema);
+// Export the model
+exports.default = OTP;

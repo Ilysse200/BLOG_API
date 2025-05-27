@@ -51,14 +51,28 @@ const { JWT_SECRET = "" } = process.env;
 class encrypt {
     static encryptpass(password) {
         return __awaiter(this, void 0, void 0, function* () {
-            return bcrypt.hashSync(password, 12);
+            if (!password)
+                throw new Error("Password is required for hashing");
+            return yield bcrypt.hash(password, 12); // use async hash
         });
     }
-    static comparepassword(hashPassword, password) {
-        return bcrypt.compareSync(password, hashPassword);
+    static comparepassword(password, hashed) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bcrypt.compare(password, hashed);
+        });
     }
     static generateToken(payload) {
         return jwt.sign(payload, JWT_SECRET, { expiresIn: "1d" });
+    }
+    static hashData(data_1) {
+        return __awaiter(this, arguments, void 0, function* (data, saltRounds = 10) {
+            return bcrypt.hash(data, saltRounds);
+        });
+    }
+    static verifyHashedData(unhashed, hashed) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return bcrypt.compare(unhashed, hashed);
+        });
     }
 }
 exports.encrypt = encrypt;

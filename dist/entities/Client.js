@@ -9,52 +9,39 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
+exports.Client = void 0;
 const typeorm_1 = require("typeorm");
-const Blog_1 = require("./Blog");
-let User = class User {
+let Client = class Client {
 };
-exports.User = User;
+exports.Client = Client;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
     __metadata("design:type", String)
-], User.prototype, "id", void 0);
+], Client.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: false, length: 100 }),
+    (0, typeorm_1.Column)({ unique: true }),
     __metadata("design:type", String)
-], User.prototype, "name", void 0);
+], Client.prototype, "email", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: false }),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], User.prototype, "email", void 0);
+], Client.prototype, "password", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: false }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
-], User.prototype, "password", void 0);
+], Client.prototype, "resetToken", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: "user" }),
-    __metadata("design:type", String)
-], User.prototype, "role", void 0);
+    (0, typeorm_1.Column)({ type: "timestamp", nullable: true }),
+    __metadata("design:type", Date)
+], Client.prototype, "resetTokenExpiry", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
-], User.prototype, "createdAt", void 0);
+], Client.prototype, "createdAt", void 0);
 __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
-], User.prototype, "updatedAt", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => Blog_1.Blog, blog => blog.author),
-    __metadata("design:type", Array)
-], User.prototype, "blogs", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
-    __metadata("design:type", Object)
-], User.prototype, "resetToken", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: "timestamp", nullable: true }),
-    __metadata("design:type", Object)
-], User.prototype, "resetTokenExpiry", void 0);
-exports.User = User = __decorate([
-    (0, typeorm_1.Entity)('User')
-], User);
+], Client.prototype, "updatedAt", void 0);
+exports.Client = Client = __decorate([
+    (0, typeorm_1.Entity)("clients")
+], Client);
