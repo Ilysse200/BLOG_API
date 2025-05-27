@@ -3,7 +3,6 @@ import { AppDataSource } from "../config/database";
 import { User } from "../entities/User";
 import { encrypt } from "../helpers/helpers";
 import { sendEmail } from "../utils/sendEmail";
-
 import { MoreThan } from "typeorm";
 import crypto from "crypto";
 
@@ -17,6 +16,7 @@ export class AuthController {
       }
 
       const userRepository = AppDataSource.getRepository(User);
+
       const existingUser = await userRepository.findOne({ where: { email } });
       if (existingUser) {
         return res.status(409).json({ message: "Email already in use" });
@@ -45,15 +45,19 @@ export class AuthController {
       const userRepository = AppDataSource.getRepository(User);
       const user = await userRepository.findOne({ where: { email } });
 
-      // ❗ FIX: Check user existence BEFORE using user.password
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
+      
 
-      const isPasswordValid = encrypt.comparepassword(user.password, password);
-      if (!user || !isPasswordValid) {
-        return res.status(404).json({ message: "User not found" });
+      const isPasswordValid = await encrypt.comparepassword(password, user.password);
+
+      if(!isPasswordValid){
+        return res.status(401).json({message:'Invalid Password'});
       }
+      // if (!user || !isPasswordValid) {
+      //   return res.status(404).json({ message: "User not found" });
+      // }
       const token = encrypt.generateToken({
         id: user.id,
         email: user.email,
@@ -65,7 +69,6 @@ export class AuthController {
       return res.status(200).json({
         message: "Login successful",
         token,
-        user: userWithoutPassword
       });
     } catch (error) {
       console.error(error);

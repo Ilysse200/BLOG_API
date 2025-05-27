@@ -67,14 +67,16 @@ class AuthController {
                 }
                 const userRepository = database_1.AppDataSource.getRepository(User_1.User);
                 const user = yield userRepository.findOne({ where: { email } });
-                // ❗ FIX: Check user existence BEFORE using user.password
                 if (!user) {
                     return res.status(404).json({ message: "User not found" });
                 }
-                const isPasswordValid = helpers_1.encrypt.comparepassword(user.password, password);
-                if (!user || !isPasswordValid) {
-                    return res.status(404).json({ message: "User not found" });
+                const isPasswordValid = yield helpers_1.encrypt.comparepassword(password, user.password);
+                if (!isPasswordValid) {
+                    return res.status(401).json({ message: 'Invalid Password' });
                 }
+                // if (!user || !isPasswordValid) {
+                //   return res.status(404).json({ message: "User not found" });
+                // }
                 const token = helpers_1.encrypt.generateToken({
                     id: user.id,
                     email: user.email,
@@ -84,7 +86,6 @@ class AuthController {
                 return res.status(200).json({
                     message: "Login successful",
                     token,
-                    user: userWithoutPassword
                 });
             }
             catch (error) {
