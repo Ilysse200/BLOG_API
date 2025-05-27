@@ -74,9 +74,6 @@ class AuthController {
                 if (!isPasswordValid) {
                     return res.status(401).json({ message: 'Invalid Password' });
                 }
-                // if (!user || !isPasswordValid) {
-                //   return res.status(404).json({ message: "User not found" });
-                // }
                 const token = helpers_1.encrypt.generateToken({
                     id: user.id,
                     email: user.email,
@@ -124,10 +121,11 @@ class AuthController {
                     return res.status(404).json({ message: "User not found" });
                 const token = crypto_1.default.randomBytes(32).toString("hex");
                 user.resetToken = token;
-                user.resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
-                yield userRepository.save(user);
+                user.resetTokenExpiry = new Date(Date.now() + 60 * 3); // 1 minute
+                // this.user.resetToken = token;
                 const resetLink = `http://localhost:3000/reset-password/${token}`;
                 yield (0, sendEmail_1.sendEmail)(user.email, "Reset Your Password", `<p>Click <a href="${resetLink}">here</a> to reset your password. This link expires in 1 hour.</p>`);
+                yield userRepository.save(user);
                 res.status(200).json({ message: "Reset link sent to email." });
             }
             catch (err) {

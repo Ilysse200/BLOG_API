@@ -55,9 +55,6 @@ export class AuthController {
       if(!isPasswordValid){
         return res.status(401).json({message:'Invalid Password'});
       }
-      // if (!user || !isPasswordValid) {
-      //   return res.status(404).json({ message: "User not found" });
-      // }
       const token = encrypt.generateToken({
         id: user.id,
         email: user.email,
@@ -108,9 +105,9 @@ export class AuthController {
       const token = crypto.randomBytes(32).toString("hex");
 
       user.resetToken = token;
-      user.resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
-      await userRepository.save(user);
-
+      
+      user.resetTokenExpiry = new Date(Date.now() + 60*3); // 1 minute
+      // this.user.resetToken = token;
       const resetLink = `http://localhost:3000/reset-password/${token}`;
 
       await sendEmail(
@@ -118,6 +115,7 @@ export class AuthController {
         "Reset Your Password",
         `<p>Click <a href="${resetLink}">here</a> to reset your password. This link expires in 1 hour.</p>`
       );
+      await userRepository.save(user);
 
       res.status(200).json({ message: "Reset link sent to email." });
     } catch (err) {
