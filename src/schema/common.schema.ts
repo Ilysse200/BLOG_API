@@ -11,6 +11,7 @@ export const passwordSchema = z.string()
     "Password must contain at least one lowercase letter, one uppercase letter, and one number"
   );
 export const idParamSchema = z.object({
-    id: z.string().regex(/^\d+$/, "ID must be a valid number").transform(Number),
+    // id: z.string().regex(/^\d+$/, "ID must be a valid number").transform(Number),
+    id:z.string().uuid()//For ids that are UUIDS 
 })
 export const nameSchema = z.string();
