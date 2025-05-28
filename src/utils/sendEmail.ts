@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import { AuthController } from "../controller/Auth.controller";
+import { AuthService } from "../service/Auth.service";
 dotenv.config();
 
 const transporter = nodemailer.createTransport({

@@ -1,20 +1,75 @@
 "use strict";
-// src/middleware/errorHandler.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.errorHandler = void 0;
-const errorHandler = (err, req, res, next) => {
-    const status = err.status || 500;
-    const message = err.message || 'Something went wrong';
-    console.error(`[Error] ${status} - ${message}`);
-    if (status === 500) {
-        console.error(err.stack);
+exports.asyncHandler = exports.errorHandler = void 0;
+const error_1 = require("../utils/error");
+const errorHandler = (error, req, res, next) => {
+    console.error('Error:', {
+        message: error.message,
+        stack: error.stack,
+        url: req.url,
+        method: req.method,
+        timestamp: new Date().toISOString()
+    });
+    // Validation errors
+    if (error instanceof error_1.ValidationError) {
+        res.status(400).json({
+            success: false,
+            message: error.message,
+            errors: error.errors
+        });
+        return;
     }
-    res.status(status).json({
-        error: {
-            message,
-            code: err.code || 'INTERNAL_SERVER_ERROR',
-            status
+    // Operational errors
+    if (error instanceof error_1.AppError) {
+        res.status(error.statusCode).json({
+            success: false,
+            message: error.message
+        });
+        return;
+    }
+    // TypeORM/Database errors
+    if (error.name === 'QueryFailedError') {
+        let message = 'Database operation failed';
+        let statusCode = 500;
+        // Handle unique constraint violations
+        if (error.message.includes('UNIQUE constraint failed')) {
+            message = 'A record with this information already exists';
+            statusCode = 409;
         }
+        res.status(statusCode).json({
+            success: false,
+            message
+        });
+        return;
+    }
+    // JWT errors
+    if (error.name === 'JsonWebTokenError') {
+        res.status(401).json({
+            success: false,
+            message: 'Invalid token'
+        });
+        return;
+    }
+    if (error.name === 'TokenExpiredError') {
+        res.status(401).json({
+            success: false,
+            message: 'Token expired'
+        });
+        return;
+    }
+    // Default error
+    res.status(500).json({
+        success: false,
+        message: process.env.NODE_ENV === 'production'
+            ? 'Internal server error'
+            : error.message
     });
 };
 exports.errorHandler = errorHandler;
+// Async error wrapper
+const asyncHandler = (fn) => {
+    return (req, res, next) => {
+        Promise.resolve(fn(req, res, next)).catch(next);
+    };
+};
+exports.asyncHandler = asyncHandler;

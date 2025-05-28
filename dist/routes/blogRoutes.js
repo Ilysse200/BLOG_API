@@ -42,5 +42,5 @@ Blogrouter.post('/createBlogs', auth_middleware_1.authentification, (0, authoriz
 Blogrouter.get('/getBlogs', auth_middleware_1.authentification, Blog_controller_1.blogController.getAllPosts);
 Blogrouter.put('/editBlogs/:id', auth_middleware_1.authentification, (0, authorization_middleware_1.authorizeRole)("admin"), Blog_controller_1.blogController.updatePost);
 Blogrouter.get('/getBlogsById/:id', auth_middleware_1.authentification, Blog_controller_1.blogController.getPostById);
-Blogrouter.delete('/deleteBlog/:id', auth_middleware_1.authentification, (0, authorization_middleware_1.authorizeRole)("admin"), Blog_controller_1.blogController.deleteBlog);
+Blogrouter.delete('/deleteBlog/:id', auth_middleware_1.authentification, (0, authorization_middleware_1.authorizeRole)("admin"), Blog_controller_1.blogController.deletePost);
 exports.default = Blogrouter;

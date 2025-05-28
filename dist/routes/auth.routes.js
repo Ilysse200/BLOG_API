@@ -34,13 +34,13 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
-const Auth_controller_1 = require("../controller/Auth.controller");
+const auth_controller_1 = require("../controller/auth.controller");
 const auth_middleware_1 = require("../middleware/auth.middleware");
 const Router = express.Router();
-Router.post("/register", Auth_controller_1.AuthController.register);
-Router.post("/login", Auth_controller_1.AuthController.login);
-Router.get("/profile", auth_middleware_1.authentification, Auth_controller_1.AuthController.getProfile);
+Router.post("/register", auth_controller_1.AuthController.register);
+Router.post("/login", auth_controller_1.AuthController.login);
+Router.get("/profile", auth_middleware_1.authentification, auth_controller_1.AuthController.getProfile);
 //Routes for forgot password and reset tokens
-Router.post("/forgot-password", Auth_controller_1.AuthController.forgotPassword);
-Router.post("/reset-password/:token", Auth_controller_1.AuthController.resetPassword);
+Router.post("/forgot-password", auth_controller_1.AuthController.forgotPassword);
+Router.post("/reset-password/:token", auth_controller_1.AuthController.resetPassword);
 exports.default = Router;
