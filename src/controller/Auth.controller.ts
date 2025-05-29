@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AuthService } from "../service/Auth.service";
 import { asyncHandler } from "../middleware/errorHandler";
 import { ApiResponse, AuthenticatedRequest } from "../types/common.types";
-import { CreateUserInput } from "../schema/user.schema";
+import { CreateUserInput, UpdateUserInput} from "../schema/user.schema";
 
 
 export class AuthController {
@@ -117,4 +117,19 @@ export const login = asyncHandler(async(
       }
     }
   }) 
+})
+
+//Function to delete the user
+
+export const deleteUser = asyncHandler(async(
+  req:UpdateUserInput,
+  res:Response<ApiResponse>,
+  next: NextFunction
+)=>{
+    const{id} = req.params;
+    const deleteUser = await AuthService.deleteUser(id);
+    res.status(200).json({
+      success:true,
+      message:"User deleted successfully!!"
+    })
 })

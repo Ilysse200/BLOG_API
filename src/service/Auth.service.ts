@@ -36,6 +36,26 @@ export class AuthService {
     };
   }
 
+  //Create a service for deleting the user
+  static async deleteUser(id:string){
+
+    //Load the user table from the db
+    const getUsers = AppDataSource.getRepository(User);
+
+    
+
+    //Check with id provided if the user exist
+    const checkUser = await getUsers.findOne({where: { id }})
+
+    if(!checkUser){
+      throw new NotFoundError("User with the provided id is");
+    }
+    //Delete the existing user
+    await getUsers.remove(checkUser);
+
+    return checkUser;
+  } 
+
   static async login(data:RegisterValues) {
     const { email, password } = data;
 
