@@ -70,7 +70,7 @@ export class AuthService {
     const user = await userRepository.findOne({ where: { id: userId } });
 
     if (!user) {
-      throw { status: 404, message: "User not found" };
+      throw new NotFoundError("User");
     }
 
     const { password: _, ...userWithoutPassword } = user;
