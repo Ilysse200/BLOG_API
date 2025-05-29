@@ -55,10 +55,10 @@ const blogRoutes_1 = __importDefault(require("./routes/blogRoutes"));
 dotenv.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use(errorHandler_1.errorHandler);
 const { PORT = 3000 } = process.env;
 app.use("/auth", auth_routes_1.default);
 app.use("/blog", blogRoutes_1.default);
+app.use(errorHandler_1.errorHandler);
 app.get(/.*/, (req, res) => {
     res.status(404).json({ message: "Route not found" });
 });
