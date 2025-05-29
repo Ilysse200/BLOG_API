@@ -11,10 +11,10 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(errorHandler);
 const { PORT = 3000 } = process.env;
 app.use("/auth", Router);
 app.use("/blog", blogRouter);
+app.use(errorHandler);
 
 app.get(/.*/, (req: Request, res: Response) => {
   res.status(404).json({ message: "Route not found" });
