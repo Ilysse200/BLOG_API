@@ -12,7 +12,7 @@ export function authorizeRole(...allowedRoles: string[]) {
     }
 
     if (!allowedRoles.includes(user.role)) {
-      throw new ForbiddenError("Not access allowed for you");
+      throw new ForbiddenError("No access allowed for you");
     }
 
     next();
