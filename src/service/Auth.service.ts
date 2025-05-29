@@ -13,7 +13,7 @@ export class AuthService {
   
 
     if (!name || !email || !password) {
-      throw { status: 400, message: "All fields are required" };
+      throw new ConflictError("Email already registered!! Try a new one");
     }
 
     const userRepository = AppDataSource.getRepository(User);
@@ -52,7 +52,7 @@ export class AuthService {
 
     const isPasswordValid = await encrypt.comparepassword(password, user.password);
     if (!isPasswordValid) {
-      throw new ConflictError("Password is incorrect");
+      throw new PasswordError("Password is incorrect");
     }
 
     const token = encrypt.generateToken({
