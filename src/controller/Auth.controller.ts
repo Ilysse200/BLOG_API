@@ -27,17 +27,31 @@ export class AuthController {
   //   }
   // }
 
-  static async getProfile(req: Request, res: Response) {
+  static async getProfile(req: Request, res: Response<ApiResponse>) {
     try {
       const currentUser = (req as any).currentUser;
       if (!currentUser) {
-        return res.status(401).json({ message: "Unauthorized" });
+        return res.status(401).json({
+          success:false,
+          message:"Profile not loaded successfully!!",
+        });
       }
 
       const user = await AuthService.getProfile(currentUser.id);
-      return res.status(200).json(user);
+      return res.status(200).json({
+        success:true,
+        message:"Profile loaded successfully!!",
+        data:{
+          name:user.name,
+          email:user.email,
+          role:user.role
+        }
+      });
     } catch (err: any) {
-      return res.status(err.status || 500).json({ message: err.message || "Server error" });
+      return res.status(err.status || 500).json({
+        success:true,
+        message:"Error loading Profile!!"
+      });
     }
   }
 
@@ -98,7 +112,8 @@ export const login = asyncHandler(async(
         id:user.id,
         name:user.name,
         email:user.email,
-        role:user.role
+        role:user.role,
+        token:user.resetToken,
       }
     }
   }) 
