@@ -36,9 +36,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = __importStar(require("express"));
 const auth_controller_1 = require("../controller/auth.controller");
 const auth_middleware_1 = require("../middleware/auth.middleware");
+const validate_middleware_1 = require("../middleware/validate.middleware");
+const user_schema_1 = require("../schema/user.schema");
 const Router = express.Router();
-Router.post("/register", auth_controller_1.AuthController.register);
-Router.post("/login", auth_controller_1.AuthController.login);
+Router.post("/register", (0, validate_middleware_1.validate)(user_schema_1.createUserSchema), auth_controller_1.register);
+Router.post("/login", (0, validate_middleware_1.validate)(user_schema_1.loginUserSchema), auth_controller_1.login);
 Router.get("/profile", auth_middleware_1.authentification, auth_controller_1.AuthController.getProfile);
 //Routes for forgot password and reset tokens
 Router.post("/forgot-password", auth_controller_1.AuthController.forgotPassword);

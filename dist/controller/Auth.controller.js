@@ -9,31 +9,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthController = void 0;
+exports.login = exports.register = exports.AuthController = void 0;
 const Auth_service_1 = require("../service/Auth.service");
+const errorHandler_1 = require("../middleware/errorHandler");
 class AuthController {
-    static register(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const token = yield Auth_service_1.AuthService.register(req.body);
-                return res.status(201).json({ message: "User created", token });
-            }
-            catch (err) {
-                return res.status(err.status || 500).json({ message: err.message || "Server error" });
-            }
-        });
-    }
-    static login(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { token } = yield Auth_service_1.AuthService.login(req.body);
-                return res.status(200).json({ message: "Login successful", token });
-            }
-            catch (err) {
-                return res.status(err.status || 500).json({ message: err.message || "Server error" });
-            }
-        });
-    }
+    // static async register(req: Request, res: Response) {
+    //   try {
+    //     const token = await AuthService.register(req.body);
+    //     return res.status(201).json({ message: "User created", token });
+    //   } catch (err: any) {
+    //     return res.status(err.status || 500).json({ message: err.message || "Server error" });
+    //   }
+    // }
+    // static async login(req: Request, res: Response) {
+    //   try {
+    //     const { token } = await AuthService.login(req.body);
+    //     return res.status(200).json({ message: "Login successful", token });
+    //   } catch (err: any) {
+    //     return res.status(err.status || 500).json({ message: err.message || "Server error" });
+    //   }
+    // }
     static getProfile(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -75,3 +70,33 @@ class AuthController {
     }
 }
 exports.AuthController = AuthController;
+exports.register = (0, errorHandler_1.asyncHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield Auth_service_1.AuthService.register(req.body);
+    res.status(201).json({
+        success: true,
+        message: "User registered successfully!!!",
+        data: {
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        }
+    });
+}));
+exports.login = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield Auth_service_1.AuthService.login(req.body);
+    res.status(200).json({
+        success: true,
+        message: 'User found in the database',
+        data: {
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        }
+    });
+}));

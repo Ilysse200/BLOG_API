@@ -32,9 +32,8 @@ const sendEmail_1 = require("../utils/sendEmail");
 const typeorm_1 = require("typeorm");
 const crypto_1 = __importDefault(require("crypto"));
 class AuthService {
-    static register(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { name, email, password, role } = data;
+    static register(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ name, email, password, role }) {
             if (!name || !email || !password) {
                 throw { status: 400, message: "All fields are required" };
             }
@@ -47,7 +46,12 @@ class AuthService {
             const user = userRepository.create({ name, email, password: hashedPassword, role });
             yield userRepository.save(user);
             const token = helpers_1.encrypt.generateToken({ id: user.id, email: user.email, role: user.role });
-            return token;
+            return {
+                id: user,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            };
         });
     }
     static login(data) {
@@ -70,7 +74,7 @@ class AuthService {
                 email: user.email,
                 role: user.role,
             });
-            return { token };
+            return user;
         });
     }
     static getProfile(userId) {

@@ -4,11 +4,12 @@ import { User } from "../entities/User";
 import { encrypt } from "../helpers/helpers";
 import { sendEmail } from "../utils/sendEmail";
 import { MoreThan } from "typeorm";
+import { RegisterValues } from "../types/auth.types";
 import crypto from "crypto";
 
 export class AuthService {
-  static async register(data: { name: string; email: string; password: string; role: string }): Promise<string> {
-    const { name, email, password, role } = data;
+  static async register({name, email, password, role}:RegisterValues) {
+  
 
     if (!name || !email || !password) {
       throw { status: 400, message: "All fields are required" };
@@ -26,10 +27,15 @@ export class AuthService {
     await userRepository.save(user);
 
     const token = encrypt.generateToken({ id: user.id, email: user.email, role: user.role });
-    return token;
+    return {
+      id:user,
+      name:user.name,
+      email:user.email,
+      role:user.role,
+    };
   }
 
-  static async login(data: { email: string; password: string }): Promise<{ token: string }> {
+  static async login(data:RegisterValues) {
     const { email, password } = data;
 
     if (!email || !password) {
@@ -54,7 +60,7 @@ export class AuthService {
       role: user.role,
     });
 
-    return { token };
+    return user;
   }
 
   static async getProfile(userId: string): Promise<Omit<User, "password">> {
