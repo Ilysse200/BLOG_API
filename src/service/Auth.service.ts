@@ -13,14 +13,14 @@ export class AuthService {
   
 
     if (!name || !email || !password) {
-      throw new ConflictError("Email already registered!! Try a new one");
+      throw { status: 400, message: "All fields are required" };
     }
 
     const userRepository = AppDataSource.getRepository(User);
 
     const existingUser = await userRepository.findOne({ where: { email } });
     if (existingUser) {
-      throw { status: 409, message: "Email already in use" };
+      throw new ConflictError("Email was registered in the database. Try a new one");
     }
 
     const hashedPassword = await encrypt.encryptpass(password);
@@ -52,7 +52,7 @@ export class AuthService {
 
     const isPasswordValid = await encrypt.comparepassword(password, user.password);
     if (!isPasswordValid) {
-      throw new PasswordError("Password is incorrect");
+      throw new ConflictError("Password is incorrect");
     }
 
     const token = encrypt.generateToken({
@@ -60,6 +60,7 @@ export class AuthService {
       email: user.email,
       role: user.role,
     });
+    user.resetToken = token;
 
     return user;
   }
