@@ -5,7 +5,7 @@ import { encrypt } from "../helpers/helpers";
 import { sendEmail } from "../utils/sendEmail";
 import { MoreThan } from "typeorm";
 import { RegisterValues } from "../types/auth.types";
-import { NotFoundError } from "../utils/error";
+import { ConflictError, NotFoundError, PasswordError } from "../utils/error";
 import crypto from "crypto";
 
 export class AuthService {
@@ -52,7 +52,7 @@ export class AuthService {
 
     const isPasswordValid = await encrypt.comparepassword(password, user.password);
     if (!isPasswordValid) {
-      throw { status: 401, message: "Invalid password" };
+      throw new ConflictError("Password is incorrect");
     }
 
     const token = encrypt.generateToken({

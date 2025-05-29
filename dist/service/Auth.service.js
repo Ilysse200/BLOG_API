@@ -68,7 +68,7 @@ class AuthService {
             }
             const isPasswordValid = yield helpers_1.encrypt.comparepassword(password, user.password);
             if (!isPasswordValid) {
-                throw { status: 401, message: "Invalid password" };
+                throw new error_1.ConflictError("Password is incorrect");
             }
             const token = helpers_1.encrypt.generateToken({
                 id: user.id,

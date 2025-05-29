@@ -6,7 +6,7 @@ import { createUserSchema, updateUserSchema, loginUserSchema } from '../schema/u
 
 const Router = express.Router();
 
-Router.post("/register",validate(createUserSchema),register as any);
+Router.post("/register",validate(createUserSchema),register);
 Router.post("/login", validate(loginUserSchema),login as any);
 Router.get("/profile", authentification as any, AuthController.getProfile as any);
 

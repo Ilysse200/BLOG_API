@@ -43,3 +43,10 @@ export class AppError extends Error {
       super(message, 409);
     }
   }
+
+  // Creating an error for when the password is incorrect
+  export class PasswordError extends AppError{
+    constructor(message = "Wrong Password"){
+      super(message,400)
+    }
+  }

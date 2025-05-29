@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConflictError = exports.ForbiddenError = exports.UnauthorizedError = exports.NotFoundError = exports.ValidationError = exports.AppError = void 0;
+exports.PasswordError = exports.ConflictError = exports.ForbiddenError = exports.UnauthorizedError = exports.NotFoundError = exports.ValidationError = exports.AppError = void 0;
 class AppError extends Error {
     constructor(message, statusCode, isOperational = true) {
         super(message);
@@ -41,3 +41,10 @@ class ConflictError extends AppError {
     }
 }
 exports.ConflictError = ConflictError;
+// Creating an error for when the password is incorrect
+class PasswordError extends AppError {
+    constructor(message = "Wrong Password") {
+        super(message, 400);
+    }
+}
+exports.PasswordError = PasswordError;

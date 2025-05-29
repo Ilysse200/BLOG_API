@@ -27,6 +27,14 @@ const errorHandler = (error, req, res, next) => {
         });
         return;
     }
+    //Call the Password error
+    // if(error instanceof PasswordError){
+    //   res.status(error.statusCode).json({
+    //     success:false,
+    //     message:error.message
+    //   });
+    //   return;
+    // }
     // TypeORM/Database errors
     if (error.name === 'QueryFailedError') {
         let message = 'Database operation failed';

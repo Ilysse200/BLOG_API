@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ValidationError, AppError } from '../utils/error';
+import { ValidationError, AppError, PasswordError } from '../utils/error';
 import { ApiResponse } from '../types/common.types';
 
 export const errorHandler = (
@@ -34,6 +34,14 @@ export const errorHandler = (
     });
     return;
   }
+  //Call the Password error
+  // if(error instanceof PasswordError){
+  //   res.status(error.statusCode).json({
+  //     success:false,
+  //     message:error.message
+  //   });
+  //   return;
+  // }
 
   // TypeORM/Database errors
   if (error.name === 'QueryFailedError') {
