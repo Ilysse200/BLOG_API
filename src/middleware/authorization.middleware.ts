@@ -1,6 +1,6 @@
 // middlewares/authorize.ts
 import { Request, Response, NextFunction } from "express";
-
+import { ForbiddenError,NotFoundError } from "../utils/error";
 export function authorizeRole(...allowedRoles: string[]) {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = (req as any).currentUser;
@@ -8,11 +8,11 @@ export function authorizeRole(...allowedRoles: string[]) {
     console.log("Role check:", user?.role);
 
     if (!user) {
-      return res.status(401).json({ message: "Unauthorized" });
+      throw new NotFoundError("User")
     }
 
     if (!allowedRoles.includes(user.role)) {
-      return res.status(403).json({ message: "Forbidden: Access denied" });
+      throw new ForbiddenError("Not access allowed for you");
     }
 
     next();
