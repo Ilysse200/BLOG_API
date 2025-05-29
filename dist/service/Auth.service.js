@@ -30,6 +30,7 @@ const User_1 = require("../entities/User");
 const helpers_1 = require("../helpers/helpers");
 const sendEmail_1 = require("../utils/sendEmail");
 const typeorm_1 = require("typeorm");
+const error_1 = require("../utils/error");
 const crypto_1 = __importDefault(require("crypto"));
 class AuthService {
     static register(_a) {
@@ -63,7 +64,7 @@ class AuthService {
             const userRepository = database_1.AppDataSource.getRepository(User_1.User);
             const user = yield userRepository.findOne({ where: { email } });
             if (!user) {
-                throw { status: 404, message: "User not found" };
+                throw new error_1.NotFoundError("User not found");
             }
             const isPasswordValid = yield helpers_1.encrypt.comparepassword(password, user.password);
             if (!isPasswordValid) {
