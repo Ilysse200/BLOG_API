@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import { payload } from "../dto/user.dto";
+import { UnauthorizedError } from "../utils/error";
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ export const authentification = (
 ): Response | void => {
   const header = req.headers.authorization;
   if (!header || !header.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Unauthorized - Missing token" });
+    throw new UnauthorizedError("Make sure your header is well formated!");
   }
 
   const token = header.split(" ")[1];
@@ -23,6 +24,6 @@ export const authentification = (
     (req as any).currentUser = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Unauthorized - Invalid token" });
+    throw new UnauthorizedError("Make sure the token provided is right!")
   }
 };
