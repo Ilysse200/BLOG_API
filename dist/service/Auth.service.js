@@ -36,7 +36,7 @@ class AuthService {
     static register(_a) {
         return __awaiter(this, arguments, void 0, function* ({ name, email, password, role }) {
             if (!name || !email || !password) {
-                throw { status: 400, message: "All fields are required" };
+                throw new error_1.ConflictError("Email already registered!! Try a new one");
             }
             const userRepository = database_1.AppDataSource.getRepository(User_1.User);
             const existingUser = yield userRepository.findOne({ where: { email } });
@@ -68,7 +68,7 @@ class AuthService {
             }
             const isPasswordValid = yield helpers_1.encrypt.comparepassword(password, user.password);
             if (!isPasswordValid) {
-                throw new error_1.ConflictError("Password is incorrect");
+                throw new error_1.PasswordError("Password is incorrect");
             }
             const token = helpers_1.encrypt.generateToken({
                 id: user.id,
