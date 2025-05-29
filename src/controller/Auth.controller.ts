@@ -49,7 +49,7 @@ export class AuthController {
       });
     } catch (err: any) {
       return res.status(err.status || 500).json({
-        success:true,
+        success:false,
         message:"Error loading Profile!!"
       });
     }
