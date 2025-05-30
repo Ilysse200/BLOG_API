@@ -3,7 +3,7 @@ import * as jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import { payload } from "../dto/user.dto";
 import { UnauthorizedError } from "../utils/error";
-
+import { AuthenticatedRequest } from "../types/common.types";
 dotenv.config();
 
 export const authentification = (

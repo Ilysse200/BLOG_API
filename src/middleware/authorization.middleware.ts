@@ -1,9 +1,10 @@
 // middlewares/authorize.ts
 import { Request, Response, NextFunction } from "express";
 import { ForbiddenError,NotFoundError } from "../utils/error";
+import { AuthenticatedRequest } from "../types/common.types";
 export function authorizeRole(...allowedRoles: string[]) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const user = (req as any).currentUser;
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    const user = (req as any).user;
 
     console.log("Role check:", user?.role);
 

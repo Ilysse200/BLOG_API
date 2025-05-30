@@ -2,7 +2,7 @@
 import { AppDataSource } from "../config/database";
 import { Blog } from "../entities/Blog";
 import { User } from "../entities/User";
-import { FailedToFind, NotFoundError, UnauthorizedError } from "../utils/error";
+import { FailedToFind, ForbiddenError, NotFoundError, UnauthorizedError } from "../utils/error";
 
 export class BlogService {
   static async createPost(currentUserId: string, data: { title: string; body: string }) {
@@ -68,9 +68,9 @@ export class BlogService {
       relations: ["author"],
     });
 
-    if (!post) throw new FailedToFind("Blog not found!!");
+    if (!post) throw new FailedToFind("Blog not found");
     if (post.author.id !== currentUserId) {
-      throw new UnauthorizedError("User not found!!");
+      throw new ForbiddenError("Not enough privileges to preform this action!!");
     }
 
     await blogRepo.remove(post);

@@ -29,7 +29,7 @@ export class AuthController {
 
   static async getProfile(req: Request, res: Response<ApiResponse>) {
     try {
-      const currentUser = (req as any).currentUser;
+      const currentUser = (req as any).user;
       if (!currentUser) {
         return res.status(401).json({
           success:false,

@@ -96,13 +96,12 @@ export const deleteBlogController = asyncHandler(async (
   res: Response<ApiResponse>,
   next: NextFunction
 ) => {
-  const blogId = req.params.id;
 
-  if (!req.user) {
-    throw new UnauthorizedError("The user is not found");
+  const{id} = req.params;
+   if (!req.user) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
   }
-
-  const result = await BlogService.deletePost(req.user.id, blogId);
+  const result = await BlogService.deletePost(req.user.id,id);
 
   return res.status(200).json({
     success: true,
