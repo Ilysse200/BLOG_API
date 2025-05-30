@@ -21,7 +21,7 @@ export const authentification = (
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as payload;
     // ✅ Type-safe and clean
-    (req as any).currentUser = decoded;
+    (req as any).user = decoded;
     next();
   } catch (err) {
     throw new UnauthorizedError("Make sure the token provided is right!")

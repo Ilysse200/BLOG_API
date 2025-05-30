@@ -1,4 +1,4 @@
-import {z} from "zod";
+import {date, z} from "zod";
 
 export const emailSchema  = z.string()
 .email('Email format is not valid')
@@ -15,3 +15,21 @@ export const idParamSchema = z.object({
     id:z.string().uuid()//For ids that are UUIDS 
 })
 export const nameSchema = z.string();
+
+export const titleSchema = z.string()
+.min(10, "The least characters should be 10 characters for the title")
+.max(40, "The title shoul not go above 40 characters")
+
+export const  bodySchema = z.string()
+.min(50, "The least amount of characters should be 50")
+.max(255, "Do not go above 255 characters while writing your blog")
+
+
+// export const createDate = z.string()
+// .refine(
+//   (val)=>!isNaN(Date.parse(val)), //Will receive string and check if it's a date
+//   {message:"Date format is not valid"}
+// )
+// .transform((val)=>new Date(val));//Convert to date
+
+
