@@ -28,12 +28,7 @@ export class AuthService {
     await userRepository.save(user);
 
     const token = encrypt.generateToken({ id: user.id, email: user.email, role: user.role });
-    return {
-      id:user,
-      name:user.name,
-      email:user.email,
-      role:user.role,
-    };
+    return user;
   }
 
   //Create a service for deleting the user

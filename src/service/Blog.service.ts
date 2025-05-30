@@ -2,6 +2,7 @@
 import { AppDataSource } from "../config/database";
 import { Blog } from "../entities/Blog";
 import { User } from "../entities/User";
+import { FailedToFind, NotFoundError, UnauthorizedError } from "../utils/error";
 
 export class BlogService {
   static async createPost(currentUserId: string, data: { title: string; body: string }) {
@@ -67,9 +68,9 @@ export class BlogService {
       relations: ["author"],
     });
 
-    if (!post) throw { status: 404, message: "Blog not found" };
+    if (!post) throw new FailedToFind("Blog not found!!");
     if (post.author.id !== currentUserId) {
-      throw { status: 403, message: "Unauthorized to delete this post" };
+      throw new UnauthorizedError("User not found!!");
     }
 
     await blogRepo.remove(post);

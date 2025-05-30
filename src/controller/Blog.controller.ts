@@ -3,7 +3,7 @@ import { BlogService } from "../service/Blog.service";
 import { asyncHandler } from "../middleware/errorHandler";
 import { createBlogInput } from "../schema/blog.schema";
 import { ApiResponse, AuthenticatedRequest } from "../types/common.types";
-
+import { UnauthorizedError } from "../utils/error";
 export class blogController {
   // static async createPost(req: Request, res: Response) {
   //   try {
@@ -43,15 +43,15 @@ export class blogController {
     }
   }
 
-  static async deletePost(req: Request, res: Response) {
-    try {
-      const currentUser = (req as any).currentUser;
-      const result = await BlogService.deletePost(currentUser.id, req.params.id);
-      return res.status(200).json(result);
-    } catch (err: any) {
-      return res.status(err.status || 500).json({ message: err.message || "Failed to delete post" });
-    }
-  }
+  // static async deletePost(req: Request, res: Response) {
+  //   try {
+  //     const currentUser = (req as any).currentUser;
+  //     const result = await BlogService.deletePost(currentUser.id, req.params.id);
+  //     return res.status(200).json(result);
+  //   } catch (err: any) {
+  //     return res.status(err.status || 500).json({ message: err.message || "Failed to delete post" });
+  //   }
+  // }
 }
 
 
@@ -87,6 +87,27 @@ export const getAllPosts = asyncHandler(async (
     success: true,
     message: "All blog posts retrieved successfully",
     data: posts,
+  });
+});
+
+//Delete Blog
+export const deleteBlogController = asyncHandler(async (
+  req: AuthenticatedRequest,
+  res: Response<ApiResponse>,
+  next: NextFunction
+) => {
+  const blogId = req.params.id;
+
+  if (!req.user) {
+    throw new UnauthorizedError("The user is not found");
+  }
+
+  const result = await BlogService.deletePost(req.user.id, blogId);
+
+  return res.status(200).json({
+    success: true,
+    message: "Blog deleted successfully",
+    data: result,
   });
 });
 

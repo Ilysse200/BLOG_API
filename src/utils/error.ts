@@ -50,3 +50,10 @@ export class AppError extends Error {
       super(message,400)
     }
   }
+
+  //For saying the blog is not found
+  export class FailedToFind extends AppError {
+    constructor(resource: string = 'Resource') {
+      super(`${resource}`, 404);
+    }
+  }
