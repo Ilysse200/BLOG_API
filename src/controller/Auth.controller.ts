@@ -55,16 +55,16 @@ export class AuthController {
     }
   }
 
-  static async forgotPassword(req: Request, res: Response) {
+  static async forgotPassword(req: Request, res: Response<ApiResponse>) {
     try {
       await AuthService.forgotPassword(req.body.email);
-      return res.status(200).json({ message: "Reset link sent to email." });
+      return res.status(200).json({ success:true, message:"Link sent to your email"});
     } catch (err: any) {
-      return res.status(err.status || 500).json({ message: err.message || "Server error" });
+      return res.status(err.status || 500).json({ success:false, message:"Email was not found"});
     }
   }
 
-  static async resetPassword(req: Request, res: Response) {
+  static async resetPassword(req: AuthenticatedRequest & UpdateUserInput, res: Response) {
     try {
       const { token } = req.params;
       const { newPassword } = req.body;

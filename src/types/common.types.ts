@@ -5,6 +5,9 @@ import { User } from '../entities/User';
 export interface AuthenticatedRequest extends Request {
   user?: User;
 }
+// export interface newField extends AuthenticatedRequest{
+//   userPassword?: User.;
+// }
 
 export interface ValidationResult<T> {
   success: boolean;

@@ -4,6 +4,7 @@ import { asyncHandler } from "../middleware/errorHandler";
 import { createBlogInput } from "../schema/blog.schema";
 import { ApiResponse, AuthenticatedRequest } from "../types/common.types";
 import { UnauthorizedError } from "../utils/error";
+import { updateBlogSchema } from "../schema/blog.schema";
 export class blogController {
   // static async createPost(req: Request, res: Response) {
   //   try {
@@ -33,13 +34,13 @@ export class blogController {
     }
   }
 
-  static async updatePost(req: Request, res: Response) {
+  static async updatePost(req: AuthenticatedRequest, res: Response<ApiResponse>) {
     try {
-      const currentUser = (req as any).currentUser;
+      const currentUser = (req as any).user;
       const updatedPost = await BlogService.updatePost(currentUser.id, req.params.id, req.body);
-      return res.status(200).json({ message: "Post updated", updatedPost });
+      return res.status(200).json({ success:true,message: "Post updated"});
     } catch (err: any) {
-      return res.status(err.status || 500).json({ message: err.message || "Failed to update post" });
+      return res.status(err.status || 500).json({success:false, message: "An error occured while updating blog!!"});
     }
   }
 
@@ -109,5 +110,13 @@ export const deleteBlogController = asyncHandler(async (
     data: result,
   });
 });
+
+// export const updateBlog = asyncHandler(async(
+//   req:AuthenticatedRequest & up,
+
+// )=>{
+
+// }
+// )
 
 

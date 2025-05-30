@@ -36,8 +36,15 @@ export const deleteUserSchema = z.object({
     params:idParamSchema
 })
 
+export const updateNewPassword = z.object({
+    newPassword:passwordSchema
+})
+
+
 export type CreateUserInput = z.infer<typeof createUserSchema>
 
 export type UpdateUserInput = z.infer<typeof updateUserSchema>
 
 export type DeleteUserInput = z.infer<typeof deleteUserSchema>
+
+export type UpdatePasswordInput = z.infer<typeof updateNewPassword>

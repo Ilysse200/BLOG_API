@@ -49,7 +49,7 @@ export class BlogService {
       relations: ["author"],
     });
 
-    if (!post) throw { status: 404, message: "Blog post not found" };
+    if (!post) throw new FailedToFind("Blog");
     if (post.author.id !== currentUserId) {
       throw { status: 403, message: "Unauthorized to update this post" };
     }

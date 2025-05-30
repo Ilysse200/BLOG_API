@@ -16,9 +16,17 @@ export const createBlogSchema = z.object({
     //     message: "updatedAt must be after createdAt",
     //   }
     // ),
-}
-
-    
+}    
 )
 
+export const updateBlogSchema = z.object({
+    body:z.object({
+        title:titleSchema.optional(),
+        body:bodySchema.optional(),
+    })
+    .refine((data)=>Object.keys(data).length > 0,{
+        message:"At least one field must be provided for update"
+    })
+})
 export type createBlogInput = z.infer<typeof createBlogSchema>
+export type updateBlogInput = z.infer<typeof updateBlogSchema>
