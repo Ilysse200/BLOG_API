@@ -5,14 +5,14 @@ import { validate } from '../middleware/validate.middleware';
 import { createUserSchema, updateUserSchema, loginUserSchema, deleteUserSchema } from '../schema/user.schema';
 import { authorizeRole } from '../middleware/authorization.middleware';
 
-const Router = express.Router();
+const authRouter = express.Router();
 
-Router.post("/register",validate(createUserSchema),register);
-Router.post("/login", validate(loginUserSchema),login as any);
-Router.get("/profile",authentification as any,authorizeRole("admin"),AuthController.getProfile as any);
-Router.delete("/delete/:id", validate(deleteUserSchema),authorizeRole("admin"),deleteUser)
+authRouter.post("/register",validate(createUserSchema),register);
+authRouter.post("/login", validate(loginUserSchema),login as any);
+authRouter.get("/profile",authentification as any,authorizeRole("admin"),AuthController.getProfile as any);
+authRouter.delete("/delete/:id", validate(deleteUserSchema),authorizeRole("admin"),deleteUser)
 
 //Routes for forgot password and reset tokens
-Router.post("/forgot-password", AuthController.forgotPassword as any);
-Router.post("/reset-password/:token",AuthController.resetPassword as any);
-export default Router;
+authRouter.post("/forgot-password", AuthController.forgotPassword as any);
+authRouter.post("/reset-password/:token",AuthController.resetPassword as any);
+export default authRouter;
