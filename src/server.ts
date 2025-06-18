@@ -7,11 +7,12 @@ import { errorHandler } from "./middleware/errorHandler";
 import routes  from "./routes";
 import swaggerUi from "swagger-ui-express"
 import swaggerDocument from "./swagger-output.json"
+import { number } from "zod";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
-const { PORT = 3000 } = process.env;
+const port= Number(process.env.PORT);
 app.use("/", routes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(errorHandler);
@@ -23,9 +24,9 @@ app.get(/.*/, (req: Request, res: Response) => {
 
 AppDataSource.initialize()
   .then(async () => {
-    app.listen(PORT, () => {
-      console.log("Server is running on http://localhost:" + PORT);
-      console.log(`Documentation is running on http://localhost:${PORT}/api-docs'`)
+    app.listen(port, '0.0.0.0',() => {
+      console.log("Server is running on " + port);
+      console.log(`Documentation is running on ${port}/api-docs'`)
     });
     console.log("Data Source has been initialized!");
   })
