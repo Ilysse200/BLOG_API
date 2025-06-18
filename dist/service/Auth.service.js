@@ -47,13 +47,22 @@ class AuthService {
             const user = userRepository.create({ name, email, password: hashedPassword, role });
             yield userRepository.save(user);
             const token = helpers_1.encrypt.generateToken({ id: user.id, email: user.email, role: user.role });
-            return {
-                id: user,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                tokens: token
-            };
+            return user;
+        });
+    }
+    //Create a service for deleting the user
+    static deleteUser(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //Load the user table from the db
+            const getUsers = database_1.AppDataSource.getRepository(User_1.User);
+            //Check with id provided if the user exist
+            const checkUser = yield getUsers.findOne({ where: { id } });
+            if (!checkUser) {
+                throw new error_1.NotFoundError("User with the provided id is");
+            }
+            //Delete the existing user
+            yield getUsers.remove(checkUser);
+            return checkUser;
         });
     }
     static login(data) {
@@ -76,6 +85,7 @@ class AuthService {
                 email: user.email,
                 role: user.role,
             });
+            user.resetToken = token;
             return user;
         });
     }
@@ -84,7 +94,7 @@ class AuthService {
             const userRepository = database_1.AppDataSource.getRepository(User_1.User);
             const user = yield userRepository.findOne({ where: { id: userId } });
             if (!user) {
-                throw { status: 404, message: "User not found" };
+                throw new error_1.NotFoundError("User");
             }
             const { password: _ } = user, userWithoutPassword = __rest(user, ["password"]);
             return userWithoutPassword;

@@ -1,4 +1,37 @@
 "use strict";
+/**
+ * @swagger
+ * /users/register:
+ * post:
+ * summary:User registration
+ * description:Receives the user credentials and save them to the database
+ * tags:
+ *  -Auth
+ * requestBody:
+ *  required:true
+ *  content:
+ *   application/json:
+ *    schema:
+ *     type:object
+ *     required:
+ *      -name
+ *      -email
+ *      -password
+ *      -role
+ *      properties:
+ *       success:
+ *         type:boolean
+ *         example:true
+ *       code:
+ *        type:integer
+ *        example:201
+ *        message:
+ *        type:string
+ *        example:User registered successfully!!
+ *       400:
+ *         description: Registration failed. An error occured.Check for validation!!
+ *
+ */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -38,11 +71,13 @@ const auth_controller_1 = require("../controller/auth.controller");
 const auth_middleware_1 = require("../middleware/auth.middleware");
 const validate_middleware_1 = require("../middleware/validate.middleware");
 const user_schema_1 = require("../schema/user.schema");
-const Router = express.Router();
-Router.post("/register", (0, validate_middleware_1.validate)(user_schema_1.createUserSchema), auth_controller_1.register);
-Router.post("/login", (0, validate_middleware_1.validate)(user_schema_1.loginUserSchema), auth_controller_1.login);
-Router.get("/profile", auth_middleware_1.authentification, auth_controller_1.AuthController.getProfile);
+const authorization_middleware_1 = require("../middleware/authorization.middleware");
+const authRouter = express.Router();
+authRouter.post("/register", (0, validate_middleware_1.validate)(user_schema_1.createUserSchema), auth_controller_1.register);
+authRouter.post("/login", (0, validate_middleware_1.validate)(user_schema_1.loginUserSchema), auth_controller_1.login);
+authRouter.get("/profile", auth_middleware_1.authentification, (0, authorization_middleware_1.authorizeRole)("admin"), auth_controller_1.AuthController.getProfile);
+authRouter.delete("/delete/:id", (0, validate_middleware_1.validate)(user_schema_1.deleteUserSchema), (0, authorization_middleware_1.authorizeRole)("admin"), auth_controller_1.deleteUser);
 //Routes for forgot password and reset tokens
-Router.post("/forgot-password", auth_controller_1.AuthController.forgotPassword);
-Router.post("/reset-password/:token", auth_controller_1.AuthController.resetPassword);
-exports.default = Router;
+authRouter.post("/forgot-password", auth_controller_1.AuthController.forgotPassword);
+authRouter.post("/reset-password/:token", auth_controller_1.AuthController.resetPassword);
+exports.default = authRouter;

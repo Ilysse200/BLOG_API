@@ -14,6 +14,7 @@ exports.BlogService = void 0;
 const database_1 = require("../config/database");
 const Blog_1 = require("../entities/Blog");
 const User_1 = require("../entities/User");
+const error_1 = require("../utils/error");
 class BlogService {
     static createPost(currentUserId, data) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -58,7 +59,7 @@ class BlogService {
                 relations: ["author"],
             });
             if (!post)
-                throw { status: 404, message: "Blog post not found" };
+                throw new error_1.FailedToFind("Blog");
             if (post.author.id !== currentUserId) {
                 throw { status: 403, message: "Unauthorized to update this post" };
             }
@@ -76,9 +77,9 @@ class BlogService {
                 relations: ["author"],
             });
             if (!post)
-                throw { status: 404, message: "Blog not found" };
+                throw new error_1.FailedToFind("Blog not found");
             if (post.author.id !== currentUserId) {
-                throw { status: 403, message: "Unauthorized to delete this post" };
+                throw new error_1.ForbiddenError("Not enough privileges to preform this action!!");
             }
             yield blogRepo.remove(post);
             return { message: "Blog deleted successfully!" };

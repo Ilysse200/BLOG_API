@@ -48,16 +48,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("./config/database");
 const express_1 = __importDefault(require("express"));
 const dotenv = __importStar(require("dotenv"));
-const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 require("reflect-metadata");
 const errorHandler_1 = require("./middleware/errorHandler");
-const blogRoutes_1 = __importDefault(require("./routes/blogRoutes"));
+const routes_1 = __importDefault(require("./routes"));
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const swagger_output_json_1 = __importDefault(require("./swagger-output.json"));
 dotenv.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 const { PORT = 3000 } = process.env;
-app.use("/auth", auth_routes_1.default);
-app.use("/blog", blogRoutes_1.default);
+app.use("/", routes_1.default);
+app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_output_json_1.default));
 app.use(errorHandler_1.errorHandler);
 app.get(/.*/, (req, res) => {
     res.status(404).json({ message: "Route not found" });
@@ -66,7 +67,9 @@ database_1.AppDataSource.initialize()
     .then(() => __awaiter(void 0, void 0, void 0, function* () {
     app.listen(PORT, () => {
         console.log("Server is running on http://localhost:" + PORT);
+        console.log(`Documentation is running on http://localhost:${PORT}/api-docs'`);
     });
     console.log("Data Source has been initialized!");
 }))
     .catch((error) => console.log(error));
+exports.default = app;

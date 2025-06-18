@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.register = exports.AuthController = void 0;
+exports.deleteUser = exports.login = exports.register = exports.AuthController = void 0;
 const Auth_service_1 = require("../service/Auth.service");
 const errorHandler_1 = require("../middleware/errorHandler");
 class AuthController {
@@ -32,15 +32,29 @@ class AuthController {
     static getProfile(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const currentUser = req.currentUser;
+                const currentUser = req.user;
                 if (!currentUser) {
-                    return res.status(401).json({ message: "Unauthorized" });
+                    return res.status(401).json({
+                        success: false,
+                        message: "Profile not loaded successfully!!",
+                    });
                 }
                 const user = yield Auth_service_1.AuthService.getProfile(currentUser.id);
-                return res.status(200).json(user);
+                return res.status(200).json({
+                    success: true,
+                    message: "Profile loaded successfully!!",
+                    data: {
+                        name: user.name,
+                        email: user.email,
+                        role: user.role
+                    }
+                });
             }
             catch (err) {
-                return res.status(err.status || 500).json({ message: err.message || "Server error" });
+                return res.status(err.status || 500).json({
+                    success: false,
+                    message: "Error loading Profile!!"
+                });
             }
         });
     }
@@ -48,10 +62,10 @@ class AuthController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield Auth_service_1.AuthService.forgotPassword(req.body.email);
-                return res.status(200).json({ message: "Reset link sent to email." });
+                return res.status(200).json({ success: true, message: "Link sent to your email" });
             }
             catch (err) {
-                return res.status(err.status || 500).json({ message: err.message || "Server error" });
+                return res.status(err.status || 500).json({ success: false, message: "Email was not found" });
             }
         });
     }
@@ -95,8 +109,18 @@ exports.login = (0, errorHandler_1.asyncHandler)((req, res) => __awaiter(void 0,
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                token: user.resetToken,
             }
         }
+    });
+}));
+//Function to delete the user
+exports.deleteUser = (0, errorHandler_1.asyncHandler)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const deleteUser = yield Auth_service_1.AuthService.deleteUser(id);
+    res.status(200).json({
+        success: true,
+        message: "User deleted successfully!!"
     });
 }));

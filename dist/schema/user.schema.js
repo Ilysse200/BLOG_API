@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUserSchema = exports.loginUserSchema = exports.createUserSchema = void 0;
+exports.updateNewPassword = exports.deleteUserSchema = exports.updateUserSchema = exports.loginUserSchema = exports.createUserSchema = void 0;
 const zod_1 = require("zod");
 const common_schema_1 = require("./common.schema");
 const common_schema_2 = require("./common.schema");
@@ -31,4 +31,10 @@ exports.updateUserSchema = zod_1.z.object({
         .refine((data) => Object.keys(data).length > 0, {
         message: "At least one field must be provided for update"
     }),
+});
+exports.deleteUserSchema = zod_1.z.object({
+    params: common_schema_1.idParamSchema
+});
+exports.updateNewPassword = zod_1.z.object({
+    newPassword: common_schema_4.passwordSchema
 });

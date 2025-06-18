@@ -1,15 +1,14 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "version": "v1.0.0",
     "title": "Blog API and UserManagement API",
     "description": "Blog API is a system that allows different users to log in and navigate through the blog platform. Users are authenticated and their access is controlled to ensure the blog services is delivered appropriatelty."
   },
-  "host": "localhost:8080",
-  "basePath": "/",
-  "schemes": [
-    "http",
-    "https"
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
   ],
   "paths": {
     "/users/register": {
@@ -50,7 +49,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -78,7 +79,9 @@
             "name": "token",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -116,7 +119,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -134,7 +139,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -147,5 +154,14 @@
         }
       }
     }
-  }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "schemas": {}
 }

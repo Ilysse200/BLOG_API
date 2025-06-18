@@ -36,21 +36,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authentification = void 0;
 const jwt = __importStar(require("jsonwebtoken"));
 const dotenv = __importStar(require("dotenv"));
+const error_1 = require("../utils/error");
 dotenv.config();
 const authentification = (req, res, next) => {
     const header = req.headers.authorization;
     if (!header || !header.startsWith("Bearer ")) {
-        return res.status(401).json({ message: "Unauthorized - Missing token" });
+        throw new error_1.UnauthorizedError("Make sure your header is well formated!");
     }
     const token = header.split(" ")[1];
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         // ✅ Type-safe and clean
-        req.currentUser = decoded;
+        req.user = decoded;
         next();
     }
     catch (err) {
-        return res.status(401).json({ message: "Unauthorized - Invalid token" });
+        throw new error_1.UnauthorizedError("Make sure the token provided is right!");
     }
 };
 exports.authentification = authentification;

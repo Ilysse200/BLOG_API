@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PasswordError = exports.ConflictError = exports.ForbiddenError = exports.UnauthorizedError = exports.NotFoundError = exports.ValidationError = exports.AppError = void 0;
+exports.FailedToFind = exports.PasswordError = exports.ConflictError = exports.ForbiddenError = exports.UnauthorizedError = exports.NotFoundError = exports.ValidationError = exports.AppError = void 0;
 class AppError extends Error {
     constructor(message, statusCode, isOperational = true) {
         super(message);
@@ -19,7 +19,7 @@ class ValidationError extends AppError {
 exports.ValidationError = ValidationError;
 class NotFoundError extends AppError {
     constructor(resource = 'Resource') {
-        super(`${resource}`, 404);
+        super(`${resource} not found`, 404);
     }
 }
 exports.NotFoundError = NotFoundError;
@@ -48,3 +48,10 @@ class PasswordError extends AppError {
     }
 }
 exports.PasswordError = PasswordError;
+//For saying the blog is not found
+class FailedToFind extends AppError {
+    constructor(resource = 'Resource') {
+        super(`${resource}`, 404);
+    }
+}
+exports.FailedToFind = FailedToFind;
