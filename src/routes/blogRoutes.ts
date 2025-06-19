@@ -10,6 +10,6 @@ const Blogrouter = express.Router();
 Blogrouter.post('/createBlogs',createPost);
 Blogrouter.get('/getBlogs', getAllPosts as any)
 // Blogrouter.put('/editBlogs/:id', authentification as any, blogController.updatePost as any );
-Blogrouter.get('/getBlogsById/:id', authentification as any, blogController.getPostById as any);
-Blogrouter.delete('/deleteBlog/:id', authentification as any,authorizeRole("admin") as any, deleteBlogController)
+Blogrouter.get('/getBlogsById/:id', blogController.getPostById as any);
+Blogrouter.delete('/deleteBlog/:id',deleteBlogController)
 export default Blogrouter;
