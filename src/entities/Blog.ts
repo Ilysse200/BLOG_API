@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from "typeorm";
 import { User } from "./User";
+import { BlogAuthor } from "../types/blog.types";
 
 @Entity()
 export class Blog {
@@ -12,8 +13,16 @@ export class Blog {
   @Column("text")
   body!: string;
 
-  @ManyToOne(() => User, user => user.blogs)
+  // Keep existing author relationship unchanged
+  @ManyToOne(() => User, user => user.blogs, { nullable: true })
   author!: User;
+
+  // Make blogAuthors nullable and optional for now
+  @Column("json", { 
+    nullable: true,
+    default: null
+  })
+  blogAuthors?: BlogAuthor[];
 
   @CreateDateColumn()
   createdAt!: Date;

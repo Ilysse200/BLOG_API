@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "swagger":"ts-node src/swagger.ts",
+    "swagger": "ts-node src/swagger.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/server.js",
     "dev:start": "ts-node src/server.ts",
@@ -27,9 +27,11 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@types/express-session": "^1.18.2",
     "bcrypt": "^6.0.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "express-session": "^1.18.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.1",
     "nodemailer": "^7.0.3",
